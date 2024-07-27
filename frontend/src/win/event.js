@@ -9,7 +9,7 @@ export function BindWindowEvent() {
     c.WinCreated = async function () {
         console.log("Win创建完毕")
         comps.Win.text = "OllamaManager " + await goFc.GetVersion();
-
+        comps.选择夹3.value = "0"
         comps.表格1.data = []
         c.按钮_刷新模型列表被单击()
 
