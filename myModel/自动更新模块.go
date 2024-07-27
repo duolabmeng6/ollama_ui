@@ -481,6 +481,13 @@ func E检查更新_Mac() {
 
 	下载文件夹路径 := E取用户下载文件夹路径()
 	info := E获取Github仓库Releases版本和更新内容()
+	if info == nil {
+		err := zenity.Info("检查更新失败")
+		if err != nil {
+			return
+		}
+		return
+	}
 	println(info.MacDownloadURL)
 	println(下载文件夹路径)
 	if info.Version == Version {
