@@ -24,6 +24,8 @@ function __aux_code() {
         Select_模型名称 : designData[0].childComponents[0].childComponents[2].childComponents[2],
         编辑框_显示对话结果 : designData[0].childComponents[0].childComponents[2].childComponents[3],
         按钮_清空 : designData[0].childComponents[0].childComponents[2].childComponents[4],
+        ContentArea1 : designData[0].childComponents[0].childComponents[3],
+        按钮_检查更新 : designData[0].childComponents[0].childComponents[3].childComponents[0],
 
     }
 }

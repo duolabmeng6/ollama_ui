@@ -8,6 +8,8 @@ export function BindWindowEvent() {
     let comps = c.comps
     c.WinCreated = async function () {
         console.log("Win创建完毕")
+        comps.Win.text = "OllamaManager " + await goFc.GetVersion();
+
         comps.表格1.data = []
         c.按钮_刷新模型列表被单击()
 
@@ -119,6 +121,12 @@ export function BindWindowEvent() {
     c.标签1被单击 = async function () {
         console.log("标签1被单击")
         systemFc.BrowserOpenURL("https://ollama.com/library")
+    }
+
+    c.按钮_检查更新被单击 = async function () {
+        console.log("按钮_检查更新被单击")
+        ElMessage.success('检查更新中');
+        await goFc.E检查更新();
     }
 //Don't delete the event function flag
 }

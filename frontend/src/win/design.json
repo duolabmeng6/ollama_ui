@@ -20,7 +20,7 @@
         "left": "0",
         "width": "100%",
         "height": "100%",
-        "value": "0",
+        "value": "3",
         "noPlace": true,
         "visible": true,
         "disable": false,
@@ -467,6 +467,44 @@
               }
             ],
             "data_id": "8cd136"
+          },
+          {
+            "id": "id-76673",
+            "name": "ContentArea1",
+            "text": "软件设置",
+            "componentName": "elContainer",
+            "top": "0",
+            "left": "0",
+            "width": "100%",
+            "height": "100%",
+            "noPlace": false,
+            "noDrag": true,
+            "visible": true,
+            "disable": false,
+            "pid": "id-13078",
+            "childComponents": [
+              {
+                "top": "8",
+                "left": "20",
+                "width": "76",
+                "height": "40",
+                "noPlace": true,
+                "buttonType": "default",
+                "visible": true,
+                "disable": false,
+                "size": "custom",
+                "zIndex": 0,
+                "text": "检查更新",
+                "id": "id-32067",
+                "componentName": "elButton",
+                "componentRawName": "Button",
+                "name": "按钮_检查更新",
+                "fid": "id-76673",
+                "data_id": "0b5a22",
+                "event_click": "按钮_检查更新被单击"
+              }
+            ],
+            "data_id": "5730fb"
           }
         ],
         "id": "id-13078",

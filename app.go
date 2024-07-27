@@ -2,6 +2,7 @@ package main
 
 import (
 	"changeme/action"
+	"changeme/myModel"
 	"context"
 	"fmt"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -71,4 +72,12 @@ func (a *App) E对话(name string, 内容 string) string {
 
 	data := a.action.E对话(name, 内容)
 	return data
+}
+func (a *App) GetVersion() string {
+	println("GetVersion", myModel.Version)
+	return myModel.Version
+}
+func (a *App) E检查更新() string {
+	myModel.E检查更新()
+	return "ok"
 }
