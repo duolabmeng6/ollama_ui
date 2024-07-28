@@ -108,8 +108,8 @@ func E获取Github仓库Releases版本和更新内容() *ReleaseInfo {
 	var urls []string
 	_url := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases", owner, repo)
 	urls = append(urls, _url)
-	_url = fmt.Sprintf("https://go.kenhong.com/releases_latest.json")
-	urls = append(urls, _url)
+	//_url = fmt.Sprintf("https://go.kenhong.com/releases_latest.json")
+	//urls = append(urls, _url)
 	// 访问urls中的内容 如果第一个访问失败了 就继续下一个
 	var resp *http.Response
 	var err error
@@ -176,8 +176,8 @@ func E获取Github仓库Releases版本和更新内容() *ReleaseInfo {
 	releaseInfo := &ReleaseInfo{
 		Version:        version,
 		DownloadURLs:   downloadURLs,
-		MacDownloadURL: "https://ghproxy.com/" + macDownloadURL,
-		WinDownloadURL: "https://ghproxy.com/" + winDownloadURL,
+		MacDownloadURL: "https://mirror.ghproxy.com/" + macDownloadURL,
+		WinDownloadURL: "https://mirror.ghproxy.com/" + winDownloadURL,
 		Changelog:      latestRelease.Body,
 		ReleaseTime:    ecore.E到时间(latestRelease.CreatedAt.String()).E时间到文本("Y-m-d H:i:s"),
 	}
