@@ -261,14 +261,14 @@
                     "span": 24,
                     "childComponents": [
                       {
-                        "top": "0",
-                        "left": "0",
+                        "top": "11",
+                        "left": "5",
                         "width": "390",
                         "height": "32",
                         "noPlace": true,
                         "visible": true,
                         "disable": false,
-                        "zIndex": 0,
+                        "zIndex": "101",
                         "color": "",
                         "label": true,
                         "percentage": "0",
@@ -292,7 +292,7 @@
                         "noPlace": true,
                         "visible": true,
                         "disable": false,
-                        "zIndex": 0,
+                        "zIndex": "101",
                         "size": "default",
                         "truncated": false,
                         "tag": "p",
@@ -629,7 +629,7 @@
                 "event_click": "按钮_检查更新被单击"
               },
               {
-                "top": "68",
+                "top": "65",
                 "left": "19",
                 "width": "121",
                 "height": "40",
