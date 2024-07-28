@@ -1,0 +1,1357 @@
+
+
+
+
+<!doctype html>
+<html>
+  <head>
+    <title>library</title>
+    
+<meta charset="utf-8">
+<meta name="description" content="Get up and running with large language models.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta property="og:image" content="https://ollama.com/public/og.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="628">
+<meta property="og:type" content="website" />
+
+<meta property="twitter:card" content="summary" />
+<meta property="twitter:site" content="ollama" />
+
+<meta property="twitter:image:src" content="https://ollama.com/public/og-twitter.png" />
+<meta property="twitter:image:width" content="1200">
+<meta property="twitter:image:height" content="628">
+
+<link rel="icon" type="image/png" sizes="16x16" href="/public/icon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/public/icon-32x32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="/public/icon-48x48.png">
+<link rel="icon" type="image/png" sizes="64x64" href="/public/icon-64x64.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/public/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/public/android-chrome-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/public/android-chrome-icon-512x512.png">
+
+  <link href="/public/tailwind.css" rel="stylesheet">
+
+<style>
+  body {
+    -webkit-font-smoothing: antialiased;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    position: absolute;
+    min-height: 100vh;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+
+    display: flex;
+    flex-direction: column;
+  }
+</style>
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Ollama",
+    "url": "https://ollama.com"
+  }
+</script>
+<script src="/public/vendor/htmx/bundle.js"></script>
+<script>
+  function copyToClipboard(element) {
+    const commandElement = element.closest('.language-none').querySelector('.command')
+    const copyText = commandElement.value === undefined ? commandElement.textContent.trim() : commandElement.value
+    const textArea = document.createElement("textarea")
+
+    textArea.value = copyText
+    document.body.appendChild(textArea)
+
+    textArea.select()
+    document.execCommand("copy")
+    document.body.removeChild(textArea)
+
+    const copyIcon = element.querySelector(".copy-icon")
+    const checkIcon = element.querySelector(".check-icon")
+
+    copyIcon.classList.add('hidden')
+    checkIcon.classList.remove('hidden')
+
+    setTimeout(() => {
+        copyIcon.classList.remove('hidden')
+        checkIcon.classList.add('hidden')
+    }, 2000)
+  }
+</script>
+
+    <meta property="og:title" content="library" />
+    <meta property="og:url" content="https://ollama.com/library" />
+    <meta property="og:description" content="Get up and running with large language models." />
+  </head>
+  <body>
+    
+<header class="sticky top-0 md:static bg-white underline-offset-4 z-40">
+  
+  <nav class="flex w-full px-6 py-4 items-center justify-between md:hidden">
+    <a href="/" class="z-50">
+      <img src="/public/ollama.png" class="w-6" alt="Ollama" />
+    </a>
+    <input type="checkbox" id="menu" class="hidden peer">
+    <label for="menu" class="peer-checked:hidden cursor-pointer z-50">
+      <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </label>
+    <label for="menu" class="hidden peer-checked:block cursor-pointer z-50">
+      <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </label>
+    <div class="peer-checked:flex fixed bg-white hidden top-0 pt-24 h-screen right-0 w-full sm:hidden flex-col px-6 py-4 text-3xl space-y-6 tracking-tight">
+      <a href="/library">Models</a>
+      <a href="/search">Search</a>
+      <a href="https://discord.com/invite/ollama">Discord</a>
+      <a href="https://github.com/ollama/ollama">GitHub</a>
+      <a href="/download">Download</a>
+      
+      
+      <a class="block" href="/login">Sign in</a>
+      
+    </div>
+  </nav>
+  <nav class="hidden select-none mx-auto md:flex justify-between items-center px-6 py-3.5 text-md md:text-lg">
+    <div class="flex items-center space-x-8">
+      <a class="mr-2" href="/"><img src="/public/ollama.png" class="w-8" alt="Ollama" /></a>
+      <a class="hover:underline" href="/blog">Blog</a>
+      <a class="hover:underline" target="_blank" href="https://discord.com/invite/ollama">
+        Discord
+      </a>
+      <a class="hover:underline" target="_blank" href="https://github.com/ollama/ollama">
+        GitHub
+      </a>
+    </div>
+    <div class="flex space-x-8 items-center">
+      
+      <div class="hidden lg:flex items-center flex-grow relative w-full max-w-[500px] pl-8">
+        <div id="searchContainer" class="relative flex items-center rounded-lg border border-neutral-200">
+          <span id="searchIcon" class="pl-2 text-2xl text-neutral-500">
+            <svg class="w-4 h-4 ml-1 mt-0.25 fill-current" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path d="m8.5 3c3.0375661 0 5.5 2.46243388 5.5 5.5 0 1.24832096-.4158777 2.3995085-1.1166416 3.3225711l4.1469717 4.1470988c.2928932.2928932.2928932.767767 0 1.0606602-.2662666.2662665-.6829303.2904726-.9765418.0726181l-.0841184-.0726181-4.1470988-4.1469717c-.9230626.7007639-2.07425014 1.1166416-3.3225711 1.1166416-3.03756612 0-5.5-2.4624339-5.5-5.5 0-3.03756612 2.46243388-5.5 5.5-5.5zm0 1.5c-2.209139 0-4 1.790861-4 4s1.790861 4 4 4 4-1.790861 4-4-1.790861-4-4-4z"/></svg>
+            </svg>
+          </span>
+          <input id="search" hx-get="/search-preview" hx-trigger="keyup changed delay:800ms, focus" hx-target="#popup"
+            name="q" class="w-full resize-none rounded-lg border-0 py-1.5 pr-10 text-sm
+                            focus:outline-none focus:ring-0" placeholder="Search models" autocomplete="off"
+            value="phi" />
+          <div id="popup" class="absolute hidden left-0 right-0 top-full z-50">
+            
+          </div>
+        </div>
+      </div>
+      
+      <a class="hover:underline" href="/library">Models</a>
+      
+        <a class="hover:underline min-w-fit" href="/login">Sign in</a>
+      
+      <a class="flex cursor-pointer items-center rounded-lg bg-neutral-800 px-4 py-1 text-white hover:bg-black" href="/download">
+        Download
+      </a>
+    </div>
+  </nav>
+</header>
+<script>
+  var searchInput = document.getElementById('search');
+  var popup = document.getElementById('popup');
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var searchIcon = document.getElementById('searchIcon');
+    if (searchIcon !== null) {
+        searchIcon.addEventListener('click', function() {
+        searchInput.focus();
+      });
+    }
+
+
+    if (searchInput !== null) {
+      searchInput.addEventListener('focus', function () {
+        document.getElementById('searchContainer').classList.add('border-blue-400', 'outline-none', 'ring', 'ring-blue-300', 'ring-opacity-75');
+        popup.classList.remove('hidden');
+        searchInput.addEventListener('keydown', handleKeyPress);
+      });
+
+      searchInput.addEventListener('focusout', function (event) {
+        
+        setTimeout(function () {
+          
+          if (!popup.contains(event.relatedTarget)) {
+            hideSearchPopup();
+            searchInput.blur();
+          }
+        }, 150);
+      });
+
+      searchInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+          hideSearchPopup();
+          searchInput.blur();
+        }
+      });
+    }
+  });
+
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Tab') {
+      setTimeout(() => {
+        if (searchInput !== null && popup !== null && !searchInput.contains(document.activeElement) && !popup.contains(document.activeElement)) {
+          searchInput.blur();
+          hideSearchPopup();
+        }
+      }, 0);
+    }
+  });
+
+  function handleKeyPress(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      var query = document.getElementById('search').value;
+      
+      if (query !== '') {
+        window.location.href = '/search?q=' + encodeURIComponent(query);
+        return;
+      }
+      window.location.href = '/search';
+    }
+  }
+
+  function hideSearchPopup() {
+    document.getElementById('searchContainer').classList.remove('border-blue-400', 'outline-none', 'ring', 'ring-blue-300', 'ring-opacity-75');
+    document.getElementById('popup').classList.add('hidden');
+    searchInput.removeEventListener('keydown', handleKeyPress);
+  }
+</script>
+
+    
+    
+    <div class="flex flex-1 justify-center">
+      <main class="mx-auto flex w-full max-w-[50rem] flex-col px-6 py-10 md:py-24 lg:px-8">
+        <div class="flex flex-wrap pb-10 items-center md:gap-x-2">
+          <div class="flex flex-col items-center w-20 md:w-24">
+            
+            <img id="profileImg" src="https://ollama.com/public/assets/c889cc0d-cb83-4c46-a98e-0d0e273151b9/42f6b28d-9117-48cd-ac0d-44baaf5c178e.png" alt="profile" class="w-20 h-20 md:w-24 md:h-24 indent-[-9999px] flex-none border border-neutral-300 rounded-full bg-white object-contain">
+            
+          </div>
+          <div class="flex flex-col flex-grow ml-6">
+            <div class="flex flex-row justify-between items-center">
+              <span class="text-[28px] font-medium tracking-tight">
+                
+                Models
+                
+              </span>
+              
+            </div>
+            <div class="space-y-1">
+              <div class="my-2">
+                <h2 class="break-words sm:max-w-lg">
+                  
+                </h2>
+              </div>
+              
+            </div>
+          </div>
+        </div>        
+        <div class="flex flex-col space-y-2 sm:flex-row sm:items-center sm:justify-between sm:space-x-3 sm:space-y-0">
+          <div class="flex-1">
+            <input
+              id="filter"
+              name="q"
+              type="text"
+              value="phi"
+              hx-get="/library"
+              hx-trigger="keyup changed delay:250ms"
+              hx-target="#repo"
+              class="relative w-full resize-none rounded-md border border-neutral-200 text-sm focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-75"
+              placeholder="Filter by name..."
+              hx-include="#filter, #sort"
+              hx-sync="this:replace"
+            />
+          </div>
+          <div class="flex flex-row space-x-1 sm:flex-shrink-0 sm:space-x-3">
+            <select
+              name="sort"
+              id="sort"
+              class="w-full flex-1 items-center justify-between gap-x-4 rounded-lg border-neutral-200 bg-white text-left text-sm font-medium text-neutral-900 hover:bg-neutral-50 sm:flex sm:w-48"
+              hx-get="/library"
+              hx-trigger="change"
+              hx-target="#repo"
+              hx-include="#filter, #sort"
+            >
+              <option disabled value="">Sort By</option>
+              
+                <option value="featured" selected>Featured</option>
+                <option value="popular" >Most popular</option>
+              
+              <option value="newest" >Newest</option>  
+            </select>
+            
+          </div>
+        </div>
+        
+<div id="repo">
+  
+  <ul role="list" class="grid grid-cols-1 gap-y-3">
+    
+    <li class="flex items-baseline border-b border-neutral-200 py-6">
+      <a href="/library/phi3" class="group w-full">
+        <div class="flex items-center mb-3">
+          <h2 class="truncate text-lg font-medium underline-offset-2 group-hover:underline md:text-2xl">
+            <span>
+              phi3
+            </span>
+          </h2>
+          
+        </div>
+        
+<div class="flex flex-col space-y-2">
+  
+  <p class="max-w-md break-words">Phi-3 is a family of lightweight 3B (Mini) and 14B (Medium) state-of-the-art open models by Microsoft.</p>
+  
+  
+  <div class="flex flex-wrap space-x-2">
+    
+    
+    <span class="inline-flex items-center rounded-md bg-[#ddf4ff] px-2 py-[2px] text-xs sm:text-[13px] font-medium text-blue-600">3B</span>
+    
+    <span class="inline-flex items-center rounded-md bg-[#ddf4ff] px-2 py-[2px] text-xs sm:text-[13px] font-medium text-blue-600">14B</span>
+    
+  </div>
+  
+  <p class="my-2 flex space-x-5 text-[13px] font-medium text-neutral-500">
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+          />
+        </svg>
+        2.2M
+        <span class="hidden sm:flex">
+          &nbsp;Pulls
+        </span>
+      </span>
+    
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+          />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
+        </svg>
+        73<span class="hidden sm:flex">&nbsp;Tags</span>
+      </span>
+    
+    <span class="flex items-center">
+      <svg 
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+      >
+        <path 
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        />
+      </svg>
+      <span class="hidden sm:flex">Updated&nbsp;</span>
+      3 weeks ago
+    </span>
+  </p>
+</div>
+
+      </a>
+    </li>
+    
+    <li class="flex items-baseline border-b border-neutral-200 py-6">
+      <a href="/library/dolphin-mixtral" class="group w-full">
+        <div class="flex items-center mb-3">
+          <h2 class="truncate text-lg font-medium underline-offset-2 group-hover:underline md:text-2xl">
+            <span>
+              dolphin-mixtral
+            </span>
+          </h2>
+          
+        </div>
+        
+<div class="flex flex-col space-y-2">
+  
+  <p class="max-w-md break-words">Uncensored, 8x7b and 8x22b fine-tuned models based on the Mixtral mixture of experts models that excels at coding tasks. Created by Eric Hartford.</p>
+  
+  
+  <div class="flex flex-wrap space-x-2">
+    
+    
+    <span class="inline-flex items-center rounded-md bg-[#ddf4ff] px-2 py-[2px] text-xs sm:text-[13px] font-medium text-blue-600">8x7B</span>
+    
+    <span class="inline-flex items-center rounded-md bg-[#ddf4ff] px-2 py-[2px] text-xs sm:text-[13px] font-medium text-blue-600">8x22B</span>
+    
+  </div>
+  
+  <p class="my-2 flex space-x-5 text-[13px] font-medium text-neutral-500">
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+          />
+        </svg>
+        334.6K
+        <span class="hidden sm:flex">
+          &nbsp;Pulls
+        </span>
+      </span>
+    
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+          />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
+        </svg>
+        87<span class="hidden sm:flex">&nbsp;Tags</span>
+      </span>
+    
+    <span class="flex items-center">
+      <svg 
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+      >
+        <path 
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        />
+      </svg>
+      <span class="hidden sm:flex">Updated&nbsp;</span>
+      2 months ago
+    </span>
+  </p>
+</div>
+
+      </a>
+    </li>
+    
+    <li class="flex items-baseline border-b border-neutral-200 py-6">
+      <a href="/library/phi" class="group w-full">
+        <div class="flex items-center mb-3">
+          <h2 class="truncate text-lg font-medium underline-offset-2 group-hover:underline md:text-2xl">
+            <span>
+              phi
+            </span>
+          </h2>
+          
+        </div>
+        
+<div class="flex flex-col space-y-2">
+  
+  <p class="max-w-md break-words">Phi-2: a 2.7B language model by Microsoft Research that demonstrates outstanding reasoning and language understanding capabilities.</p>
+  
+  
+  <div class="flex flex-wrap space-x-2">
+    
+    
+    <span class="inline-flex items-center rounded-md bg-[#ddf4ff] px-2 py-[2px] text-xs sm:text-[13px] font-medium text-blue-600">3B</span>
+    
+  </div>
+  
+  <p class="my-2 flex space-x-5 text-[13px] font-medium text-neutral-500">
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+          />
+        </svg>
+        228.3K
+        <span class="hidden sm:flex">
+          &nbsp;Pulls
+        </span>
+      </span>
+    
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+          />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
+        </svg>
+        18<span class="hidden sm:flex">&nbsp;Tags</span>
+      </span>
+    
+    <span class="flex items-center">
+      <svg 
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+      >
+        <path 
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        />
+      </svg>
+      <span class="hidden sm:flex">Updated&nbsp;</span>
+      5 months ago
+    </span>
+  </p>
+</div>
+
+      </a>
+    </li>
+    
+    <li class="flex items-baseline border-b border-neutral-200 py-6">
+      <a href="/library/dolphin-mistral" class="group w-full">
+        <div class="flex items-center mb-3">
+          <h2 class="truncate text-lg font-medium underline-offset-2 group-hover:underline md:text-2xl">
+            <span>
+              dolphin-mistral
+            </span>
+          </h2>
+          
+        </div>
+        
+<div class="flex flex-col space-y-2">
+  
+  <p class="max-w-md break-words">The uncensored Dolphin model based on Mistral that excels at coding tasks. Updated to version 2.8.</p>
+  
+  
+  <div class="flex flex-wrap space-x-2">
+    
+    
+    <span class="inline-flex items-center rounded-md bg-[#ddf4ff] px-2 py-[2px] text-xs sm:text-[13px] font-medium text-blue-600">7B</span>
+    
+  </div>
+  
+  <p class="my-2 flex space-x-5 text-[13px] font-medium text-neutral-500">
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+          />
+        </svg>
+        168.4K
+        <span class="hidden sm:flex">
+          &nbsp;Pulls
+        </span>
+      </span>
+    
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+          />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
+        </svg>
+        120<span class="hidden sm:flex">&nbsp;Tags</span>
+      </span>
+    
+    <span class="flex items-center">
+      <svg 
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+      >
+        <path 
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        />
+      </svg>
+      <span class="hidden sm:flex">Updated&nbsp;</span>
+      3 months ago
+    </span>
+  </p>
+</div>
+
+      </a>
+    </li>
+    
+    <li class="flex items-baseline border-b border-neutral-200 py-6">
+      <a href="/library/dolphin-llama3" class="group w-full">
+        <div class="flex items-center mb-3">
+          <h2 class="truncate text-lg font-medium underline-offset-2 group-hover:underline md:text-2xl">
+            <span>
+              dolphin-llama3
+            </span>
+          </h2>
+          
+        </div>
+        
+<div class="flex flex-col space-y-2">
+  
+  <p class="max-w-md break-words">Dolphin 2.9 is a new model with 8B and 70B sizes by Eric Hartford based on Llama 3 that has a variety of instruction, conversational, and coding skills.</p>
+  
+  
+  <div class="flex flex-wrap space-x-2">
+    
+    
+    <span class="inline-flex items-center rounded-md bg-[#ddf4ff] px-2 py-[2px] text-xs sm:text-[13px] font-medium text-blue-600">8B</span>
+    
+    <span class="inline-flex items-center rounded-md bg-[#ddf4ff] px-2 py-[2px] text-xs sm:text-[13px] font-medium text-blue-600">70B</span>
+    
+  </div>
+  
+  <p class="my-2 flex space-x-5 text-[13px] font-medium text-neutral-500">
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+          />
+        </svg>
+        148.3K
+        <span class="hidden sm:flex">
+          &nbsp;Pulls
+        </span>
+      </span>
+    
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+          />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
+        </svg>
+        54<span class="hidden sm:flex">&nbsp;Tags</span>
+      </span>
+    
+    <span class="flex items-center">
+      <svg 
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+      >
+        <path 
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        />
+      </svg>
+      <span class="hidden sm:flex">Updated&nbsp;</span>
+      2 months ago
+    </span>
+  </p>
+</div>
+
+      </a>
+    </li>
+    
+    <li class="flex items-baseline border-b border-neutral-200 py-6">
+      <a href="/library/tinydolphin" class="group w-full">
+        <div class="flex items-center mb-3">
+          <h2 class="truncate text-lg font-medium underline-offset-2 group-hover:underline md:text-2xl">
+            <span>
+              tinydolphin
+            </span>
+          </h2>
+          
+        </div>
+        
+<div class="flex flex-col space-y-2">
+  
+  <p class="max-w-md break-words">An experimental 1.1B parameter model trained on the new Dolphin 2.8 dataset by Eric Hartford and based on TinyLlama.</p>
+  
+  
+  <div class="flex flex-wrap space-x-2">
+    
+    
+    <span class="inline-flex items-center rounded-md bg-[#ddf4ff] px-2 py-[2px] text-xs sm:text-[13px] font-medium text-blue-600">1B</span>
+    
+  </div>
+  
+  <p class="my-2 flex space-x-5 text-[13px] font-medium text-neutral-500">
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+          />
+        </svg>
+        74K
+        <span class="hidden sm:flex">
+          &nbsp;Pulls
+        </span>
+      </span>
+    
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+          />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
+        </svg>
+        18<span class="hidden sm:flex">&nbsp;Tags</span>
+      </span>
+    
+    <span class="flex items-center">
+      <svg 
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+      >
+        <path 
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        />
+      </svg>
+      <span class="hidden sm:flex">Updated&nbsp;</span>
+      5 months ago
+    </span>
+  </p>
+</div>
+
+      </a>
+    </li>
+    
+    <li class="flex items-baseline border-b border-neutral-200 py-6">
+      <a href="/library/phind-codellama" class="group w-full">
+        <div class="flex items-center mb-3">
+          <h2 class="truncate text-lg font-medium underline-offset-2 group-hover:underline md:text-2xl">
+            <span>
+              phind-codellama
+            </span>
+          </h2>
+          
+        </div>
+        
+<div class="flex flex-col space-y-2">
+  
+  <p class="max-w-md break-words">Code generation model based on Code Llama.</p>
+  
+  
+  <div class="flex flex-wrap space-x-2">
+    
+    <span class="inline-flex items-center rounded-md bg-indigo-50 px-2 py-[2px] text-xs sm:text-[13px] font-medium text-indigo-600">Code</span>
+    
+    
+    <span class="inline-flex items-center rounded-md bg-[#ddf4ff] px-2 py-[2px] text-xs sm:text-[13px] font-medium text-blue-600">34B</span>
+    
+  </div>
+  
+  <p class="my-2 flex space-x-5 text-[13px] font-medium text-neutral-500">
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+          />
+        </svg>
+        50K
+        <span class="hidden sm:flex">
+          &nbsp;Pulls
+        </span>
+      </span>
+    
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+          />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
+        </svg>
+        49<span class="hidden sm:flex">&nbsp;Tags</span>
+      </span>
+    
+    <span class="flex items-center">
+      <svg 
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+      >
+        <path 
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        />
+      </svg>
+      <span class="hidden sm:flex">Updated&nbsp;</span>
+      7 months ago
+    </span>
+  </p>
+</div>
+
+      </a>
+    </li>
+    
+    <li class="flex items-baseline border-b border-neutral-200 py-6">
+      <a href="/library/dolphincoder" class="group w-full">
+        <div class="flex items-center mb-3">
+          <h2 class="truncate text-lg font-medium underline-offset-2 group-hover:underline md:text-2xl">
+            <span>
+              dolphincoder
+            </span>
+          </h2>
+          
+        </div>
+        
+<div class="flex flex-col space-y-2">
+  
+  <p class="max-w-md break-words">A 7B and 15B uncensored variant of the Dolphin model family that excels at coding, based on StarCoder2.</p>
+  
+  
+  <div class="flex flex-wrap space-x-2">
+    
+    <span class="inline-flex items-center rounded-md bg-indigo-50 px-2 py-[2px] text-xs sm:text-[13px] font-medium text-indigo-600">Code</span>
+    
+    
+    <span class="inline-flex items-center rounded-md bg-[#ddf4ff] px-2 py-[2px] text-xs sm:text-[13px] font-medium text-blue-600">7B</span>
+    
+  </div>
+  
+  <p class="my-2 flex space-x-5 text-[13px] font-medium text-neutral-500">
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+          />
+        </svg>
+        48.1K
+        <span class="hidden sm:flex">
+          &nbsp;Pulls
+        </span>
+      </span>
+    
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+          />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
+        </svg>
+        35<span class="hidden sm:flex">&nbsp;Tags</span>
+      </span>
+    
+    <span class="flex items-center">
+      <svg 
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+      >
+        <path 
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        />
+      </svg>
+      <span class="hidden sm:flex">Updated&nbsp;</span>
+      3 months ago
+    </span>
+  </p>
+</div>
+
+      </a>
+    </li>
+    
+    <li class="flex items-baseline border-b border-neutral-200 py-6">
+      <a href="/library/dolphin-phi" class="group w-full">
+        <div class="flex items-center mb-3">
+          <h2 class="truncate text-lg font-medium underline-offset-2 group-hover:underline md:text-2xl">
+            <span>
+              dolphin-phi
+            </span>
+          </h2>
+          
+        </div>
+        
+<div class="flex flex-col space-y-2">
+  
+  <p class="max-w-md break-words">2.7B uncensored Dolphin model by Eric Hartford, based on the Phi language model by Microsoft Research.</p>
+  
+  
+  <div class="flex flex-wrap space-x-2">
+    
+    
+    <span class="inline-flex items-center rounded-md bg-[#ddf4ff] px-2 py-[2px] text-xs sm:text-[13px] font-medium text-blue-600">3B</span>
+    
+  </div>
+  
+  <p class="my-2 flex space-x-5 text-[13px] font-medium text-neutral-500">
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+          />
+        </svg>
+        33.4K
+        <span class="hidden sm:flex">
+          &nbsp;Pulls
+        </span>
+      </span>
+    
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+          />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
+        </svg>
+        15<span class="hidden sm:flex">&nbsp;Tags</span>
+      </span>
+    
+    <span class="flex items-center">
+      <svg 
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+      >
+        <path 
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        />
+      </svg>
+      <span class="hidden sm:flex">Updated&nbsp;</span>
+      7 months ago
+    </span>
+  </p>
+</div>
+
+      </a>
+    </li>
+    
+    <li class="flex items-baseline border-b border-neutral-200 py-6">
+      <a href="/library/llava-phi3" class="group w-full">
+        <div class="flex items-center mb-3">
+          <h2 class="truncate text-lg font-medium underline-offset-2 group-hover:underline md:text-2xl">
+            <span>
+              llava-phi3
+            </span>
+          </h2>
+          
+        </div>
+        
+<div class="flex flex-col space-y-2">
+  
+  <p class="max-w-md break-words">A new small LLaVA model fine-tuned from Phi 3 Mini.</p>
+  
+  
+  <div class="flex flex-wrap space-x-2">
+    
+    <span class="inline-flex items-center rounded-md bg-indigo-50 px-2 py-[2px] text-xs sm:text-[13px] font-medium text-indigo-600">Vision</span>
+    
+    
+    <span class="inline-flex items-center rounded-md bg-[#ddf4ff] px-2 py-[2px] text-xs sm:text-[13px] font-medium text-blue-600">3B</span>
+    
+  </div>
+  
+  <p class="my-2 flex space-x-5 text-[13px] font-medium text-neutral-500">
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+          />
+        </svg>
+        20.7K
+        <span class="hidden sm:flex">
+          &nbsp;Pulls
+        </span>
+      </span>
+    
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+          />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
+        </svg>
+        4<span class="hidden sm:flex">&nbsp;Tags</span>
+      </span>
+    
+    <span class="flex items-center">
+      <svg 
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+      >
+        <path 
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        />
+      </svg>
+      <span class="hidden sm:flex">Updated&nbsp;</span>
+      2 months ago
+    </span>
+  </p>
+</div>
+
+      </a>
+    </li>
+    
+    <li class="flex items-baseline border-b border-neutral-200 py-6">
+      <a href="/library/megadolphin" class="group w-full">
+        <div class="flex items-center mb-3">
+          <h2 class="truncate text-lg font-medium underline-offset-2 group-hover:underline md:text-2xl">
+            <span>
+              megadolphin
+            </span>
+          </h2>
+          
+        </div>
+        
+<div class="flex flex-col space-y-2">
+  
+  <p class="max-w-md break-words">MegaDolphin-2.2-120b is a transformation of Dolphin-2.2-70b created by interleaving the model with itself.</p>
+  
+  
+  <p class="my-2 flex space-x-5 text-[13px] font-medium text-neutral-500">
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+          />
+        </svg>
+        13.9K
+        <span class="hidden sm:flex">
+          &nbsp;Pulls
+        </span>
+      </span>
+    
+    
+      <span class="flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+          />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
+        </svg>
+        19<span class="hidden sm:flex">&nbsp;Tags</span>
+      </span>
+    
+    <span class="flex items-center">
+      <svg 
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="mr-1.5 h-[14px] w-[14px] sm:h-4 sm:w-4"
+      >
+        <path 
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        />
+      </svg>
+      <span class="hidden sm:flex">Updated&nbsp;</span>
+      6 months ago
+    </span>
+  </p>
+</div>
+
+      </a>
+    </li>
+    
+  </ul>
+  
+</div>
+
+      </main>
+    </div>
+    
+<footer class="hidden md:flex inset-x-0 bottom-0 bg-white underline-offset-4 z-50">
+  <div class="w-full px-6 py-3.5 flex items-center justify-between">
+    <div class="text-xs text-neutral-500">© 2024 Ollama</div>
+    <div class="flex space-x-6 text-xs text-neutral-500">
+      <a href="/blog" class="hover:underline">Blog</a>
+      <a href="https://github.com/ollama/ollama/tree/main/docs" class="hover:underline">Docs</a>
+      <a href="https://github.com/ollama/ollama" class="hover:underline">GitHub</a>
+      <a href="https://discord.com/invite/ollama" class="hover:underline">Discord</a>
+      <a href="https://twitter.com/ollama" class="hover:underline">X (Twitter)</a>
+      <a href="/events" class="hover:underline">Meetups</a>
+    </div>
+  </div>
+</footer>
+<footer class="inset-x-0 flex bottom-0 md:hidden py-4 bg-white">
+  <div class="flex flex-col items-center justify-center w-full">
+    <ul class="flex flex-wrap justify-center items-center text-sm text-neutral-500">
+      <li class="mx-2 my-1"><a href="/blog" class="hover:underline">Blog</a></li>
+      <li class="mx-2 my-1"><a href="https://github.com/ollama/ollama/tree/main/docs" class="hover:underline">Docs</a></li>
+      <li class="mx-2 my-1"><a href="https://github.com/ollama/ollama" class="hover:underline">GitHub</a></li>
+    </ul>
+    <ul class="flex flex-wrap justify-center items-center text-sm text-neutral-500">
+      <li class="mx-2 my-1"><a href="https://discord.com/invite/ollama" class="hover:underline">Discord</a></li>
+      <li class="mx-2 my-1"><a href="https://twitter.com/ollama" class="hover:underline">X (Twitter)</a></li>
+      <li class="mx-2 my-1"><a href="/events" class="hover:underline">Meetups</a></li>
+    </ul>
+    <div class="flex items-center justify-center mt-2 text-neutral-500 text-sm">
+      © 2024 Ollama
+    </div>
+  </div>
+</footer>
+
+    <script>
+      document.body.addEventListener('htmx:afterRequest', function (event) {
+        const currentUrl = new URL(window.location)
+
+        if (event.target.id === 'filter') {
+          if (event.target.value !== '') {
+            currentUrl.searchParams.set('q', event.target.value)
+          } else {
+            currentUrl.searchParams.delete('q')
+          }
+        } else if (event.target.id === 'sort') {
+          if (event.target.value !== '') {
+            currentUrl.searchParams.set('sort', event.target.value)
+          } else {
+            currentUrl.searchParams.delete('sort')
+          }
+        }
+
+        history.pushState({}, '', currentUrl.toString())
+      })
+    </script>
+  </body>
+</html>

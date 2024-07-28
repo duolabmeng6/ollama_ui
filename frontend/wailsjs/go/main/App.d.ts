@@ -11,11 +11,15 @@ export function E对话(arg1:string,arg2:string):Promise<string>;
 
 export function E按钮1被点击():Promise<string>;
 
+export function E搜索模型(arg1:string):Promise<string>;
+
 export function E检查更新():Promise<string>;
 
 export function E模型改名(arg1:string,arg2:string):Promise<string>;
 
 export function E获取模型列表():Promise<string>;
+
+export function E设置服务器地址(arg1:string):Promise<void>;
 
 export function GetVersion():Promise<string>;
 

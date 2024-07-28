@@ -81,3 +81,10 @@ func (a *App) E检查更新() string {
 	myModel.E检查更新()
 	return "ok"
 }
+
+func (a *App) E搜索模型(name string) string {
+	return a.action.E搜索模型(name)
+}
+func (a *App) E设置服务器地址(n string) {
+	a.action.E服务器地址 = n
+}

@@ -5,6 +5,7 @@ import (
 	"changeme/action/ollama_chat"
 	"encoding/json"
 	"fmt"
+	"github.com/PuerkitoBio/goquery"
 	"github.com/duolabmeng6/goefun/ecore"
 	"github.com/duolabmeng6/goefun/ehttp"
 	"github.com/duolabmeng6/goefun/etool"
@@ -42,21 +43,24 @@ type Ollama操作接口 interface {
 	E复制模型(模型名称 string, 目标名称 string) string
 	E停止下载() string
 	E对话(模型名称 string, 内容 string) string
+	E搜索模型(模型名称 string) string
 }
 
 type Ollama操作 struct {
 	Ollama操作接口
-	停止下载 bool
+	停止下载   bool
+	E服务器地址 string
 }
 
 func NeOllama操作() *Ollama操作 {
 	m := new(Ollama操作)
+	m.E服务器地址 = "http://localhost:11434"
 	return m
 }
 
 func (this *Ollama操作) E获取模型列表() string {
 	eh := ehttp.NewHttp()
-	response, err := eh.Get("http://localhost:11434/api/tags")
+	response, err := eh.Get(this.E服务器地址 + "/api/tags")
 
 	var modelResponse ModelResponse
 	err = json.Unmarshal([]byte(response), &modelResponse)
@@ -98,7 +102,7 @@ func formatTime(timeStr string) string {
 }
 
 func (this *Ollama操作) E下载模型(模型名称 string, fn func(总大小, 已下载, 总进度 string)) string {
-	url := "http://localhost:11434/api/pull"
+	url := this.E服务器地址 + "/api/pull"
 	payload := fmt.Sprintf(`{"name": "%s", "stream": true}`, 模型名称)
 	this.停止下载 = false
 	resp, err := http.Post(url, "application/json", strings.NewReader(payload))
@@ -167,9 +171,9 @@ func (this *Ollama操作) E停止下载() string {
 	this.停止下载 = true
 	return "停止下载"
 }
-func (o *Ollama操作) E复制模型(模型名称 string, 目标名称 string) string {
+func (this *Ollama操作) E复制模型(模型名称 string, 目标名称 string) string {
 	eh := ehttp.NewHttp()
-	response, _ := eh.Post("http://localhost:11434/api/copy", `{
+	response, _ := eh.Post(this.E服务器地址+"/api/copy", `{
   "source": "`+模型名称+`",
   "destination": "`+目标名称+`"
 }`)
@@ -181,7 +185,7 @@ func (o *Ollama操作) E复制模型(模型名称 string, 目标名称 string) s
 }
 
 func (this *Ollama操作) E对话(模型名称 string, 内容 string) string {
-	chatbot := ollama_chat.New机器人连续聊天("http://localhost:11434/api/chat", "",
+	chatbot := ollama_chat.New机器人连续聊天(this.E服务器地址+"/api/chat", "",
 		模型名称,
 	)
 	chatbot.E清空对话()
@@ -189,12 +193,12 @@ func (this *Ollama操作) E对话(模型名称 string, 内容 string) string {
 	chatbot.E设定聊天内容("你是助手")
 	回答 = chatbot.E发送消息(内容)
 	fmt.Println(回答)
-	
+
 	return 回答
 }
 
 func (this *Ollama操作) E删除模型(name string) string {
-	url := "http://localhost:11434/api/delete"
+	url := this.E服务器地址 + "/api/delete"
 	payload := fmt.Sprintf(`{"name": "%s"}`, name)
 
 	// 创建一个新的请求
@@ -251,4 +255,54 @@ func 字节转友好字符串(字节 int64) string {
 	}
 
 	return fmt.Sprintf(格式化字符串, 大小, 单位[i])
+}
+
+type ModelInfo struct {
+	Name        string   `json:"name"`
+	Tags        []string `json:"tags"`
+	Description string   `json:"description"`
+	UpdatedTime string   `json:"updated_time"`
+}
+
+func extractModelInfo(html string) ([]ModelInfo, error) {
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
+	if err != nil {
+		return []ModelInfo{}, err
+	}
+
+	var info ModelInfo
+	var infos []ModelInfo
+
+	doc.Find("#repo li").Each(func(i int, s *goquery.Selection) {
+		name := strings.TrimSpace(s.Find("h2 span").Text())
+		info.Name = name
+
+		// nfo.Sizes = string[]{s.Find(".bg-\\[\\#ddf4ff\\]").Text()}
+		info.Tags = s.Find(".bg-\\[\\#ddf4ff\\]").Map(func(i int, sel *goquery.Selection) string {
+			return strings.TrimSpace(sel.Text())
+		})
+
+		info.Description = strings.TrimSpace(s.Find("p.max-w-md").Text())
+
+		updatedTime := strings.TrimSpace(s.Find("span:contains('Updated')").Text())
+		info.UpdatedTime = strings.TrimSpace(strings.Replace(updatedTime, "Updated", "", -1))
+		infos = append(infos, info)
+	})
+
+	return infos, nil
+}
+
+func (this *Ollama操作) E搜索模型(模型名称 string) string {
+	//访问 https://ollama.com/library?q=phi&sort=featured
+	url := fmt.Sprintf("https://ollama.com/library?q=%s&sort=featured", 模型名称)
+	eh := ehttp.NewHttp()
+	response, err := eh.Get(url)
+	if err != nil {
+		return ""
+	}
+	//ecore.E写到文件("1.html", []byte(response))
+	//response := ecore.E读入文本("1.html")
+	data, _ := extractModelInfo(response)
+	ecore.E调试输出(data)
+	return etool.E到Json(data)
 }

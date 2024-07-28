@@ -3,6 +3,7 @@ module changeme
 go 1.18
 
 require (
+	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/duolabmeng6/goefun v1.3.8
 	github.com/ncruces/zenity v0.10.13
 	github.com/wailsapp/wails/v2 v2.6.0
@@ -11,6 +12,7 @@ require (
 require (
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/akavel/rsrc v0.10.2 // indirect
+	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394 // indirect
 	github.com/bep/debounce v1.2.1 // indirect
 	github.com/dchest/jsmin v0.0.0-20220218165748-59f39799265f // indirect

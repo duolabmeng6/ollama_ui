@@ -189,9 +189,9 @@
             "zIndex": 0,
             "childComponents": [
               {
-                "top": "16",
-                "left": "33",
-                "width": "225",
+                "top": 18,
+                "left": 426,
+                "width": "133",
                 "height": "40",
                 "noPlace": true,
                 "visible": true,
@@ -211,8 +211,8 @@
                 "data_id": "da9237"
               },
               {
-                "top": "16",
-                "left": "268",
+                "top": 18,
+                "left": 564,
                 "width": "120",
                 "height": "40",
                 "noPlace": true,
@@ -231,10 +231,10 @@
                 "event_click": "按钮_下载被单击"
               },
               {
-                "top": "69",
-                "left": "33",
+                "top": "296",
+                "left": "14",
                 "width": "625",
-                "height": "231",
+                "height": "71",
                 "noPlace": true,
                 "visible": true,
                 "disable": false,
@@ -246,7 +246,7 @@
                 "childComponents": [
                   {
                     "componentName": "elContainer",
-                    "name": "ContentArea8",
+                    "name": "ContentArea_下载状态",
                     "top": "0",
                     "left": "0",
                     "width": "100%",
@@ -257,7 +257,7 @@
                     "visible": true,
                     "disable": false,
                     "pid": "id-79862",
-                    "zIndex": 0,
+                    "zIndex": "100",
                     "span": 24,
                     "childComponents": [
                       {
@@ -319,8 +319,8 @@
                 "data_id": "dd441e"
               },
               {
-                "top": "14",
-                "left": "414",
+                "top": "321",
+                "left": "518",
                 "width": "210",
                 "height": "40",
                 "noPlace": true,
@@ -340,6 +340,131 @@
                 "fid": "id-56176",
                 "data_id": "9a52dd",
                 "event_click": "标签1被单击"
+              },
+              {
+                "top": "18",
+                "left": "17",
+                "width": "225",
+                "height": "40",
+                "noPlace": true,
+                "visible": true,
+                "disable": false,
+                "zIndex": 0,
+                "size": "custom",
+                "内容": "",
+                "type": "text",
+                "placeholder": "请输入搜索的模型名称",
+                "maxlength": -1,
+                "id": "id-46234",
+                "componentName": "elTextEdit",
+                "componentRawName": "TextEdit",
+                "name": "编辑框_搜索模型名称",
+                "text": "",
+                "fid": "id-56176",
+                "data_id": "33ec9d",
+                "event_blur": "编辑框_搜索模型名称失去焦点",
+                "event_keydown": "编辑框_搜索模型名称按下某键"
+              },
+              {
+                "top": "17",
+                "left": "247",
+                "width": "120",
+                "height": "40",
+                "noPlace": true,
+                "buttonType": "default",
+                "visible": true,
+                "disable": false,
+                "size": "custom",
+                "zIndex": 0,
+                "text": "搜索模型",
+                "id": "id-53479",
+                "componentName": "elButton",
+                "componentRawName": "Button",
+                "name": "按钮_搜索模型",
+                "fid": "id-56176",
+                "data_id": "a967fa",
+                "event_click": "按钮_搜索模型被单击"
+              },
+              {
+                "top": "64",
+                "left": "17",
+                "width": "666",
+                "height": "228",
+                "noPlace": true,
+                "visible": true,
+                "disable": false,
+                "zIndex": 0,
+                "stripe": false,
+                "border": false,
+                "select": false,
+                "value": [],
+                "tableLayout": "fixed",
+                "header": [
+                  {
+                    "label": "模型名称",
+                    "prop": "name",
+                    "width": "120",
+                    "fixed": true
+                  },
+                  {
+                    "label": "模型版本",
+                    "prop": "tags",
+                    "width": "180",
+                    "fixed": false
+                  },
+                  {
+                    "label": "描述",
+                    "prop": "description",
+                    "width": "180",
+                    "fixed": false
+                  },
+                  {
+                    "label": "更新时间",
+                    "prop": "updated_time",
+                    "width": "120",
+                    "fixed": false
+                  }
+                ],
+                "data": [
+                  {
+                    "name": "qwen2",
+                    "tags": [
+                      "0.5B",
+                      "1.5B",
+                      "7B",
+                      "72B"
+                    ],
+                    "description": "Qwen2 is a new series of large language models from Alibaba group",
+                    "updated_time": "7 weeks ago"
+                  },
+                  {
+                    "name": "qwen",
+                    "tags": [
+                      "0.5B",
+                      "1.8B",
+                      "4B",
+                      "32B",
+                      "72B",
+                      "110B"
+                    ],
+                    "description": "Qwen 1.5 is a series of large language models by Alibaba Cloud spanning from 0.5B to 110B parameters",
+                    "updated_time": "7 weeks ago"
+                  },
+                  {
+                    "name": "codeqwen",
+                    "tags": [
+                      "7B"
+                    ],
+                    "description": "CodeQwen1.5 is a large language model pretrained on a large amount of code data.",
+                    "updated_time": "4 weeks ago"
+                  }
+                ],
+                "id": "id-60027",
+                "componentName": "elTable",
+                "componentRawName": "Table",
+                "name": "表格3",
+                "fid": "id-56176",
+                "data_id": "8709db"
               }
             ],
             "id": "id-56176",
@@ -502,6 +627,72 @@
                 "fid": "id-76673",
                 "data_id": "0b5a22",
                 "event_click": "按钮_检查更新被单击"
+              },
+              {
+                "top": "68",
+                "left": "19",
+                "width": "121",
+                "height": "40",
+                "noPlace": true,
+                "visible": true,
+                "disable": false,
+                "zIndex": 0,
+                "size": "default",
+                "truncated": false,
+                "tag": "p",
+                "tagPosition": "text-left-center",
+                "corlor": "#606266",
+                "text": "ollama服务器地址",
+                "id": "id-58519",
+                "componentName": "elLabel",
+                "componentRawName": "Label",
+                "name": "标签2",
+                "fid": "id-76673",
+                "data_id": "0bdf94"
+              },
+              {
+                "top": "65",
+                "left": "147",
+                "width": "249",
+                "height": "40",
+                "noPlace": true,
+                "visible": true,
+                "disable": false,
+                "zIndex": 0,
+                "size": "custom",
+                "内容": "",
+                "type": "text",
+                "placeholder": "例如: localhost:11434",
+                "maxlength": -1,
+                "id": "id-59954",
+                "componentName": "elTextEdit",
+                "componentRawName": "TextEdit",
+                "name": "编辑框_服务器地址",
+                "text": "localhost:11434",
+                "fid": "id-76673",
+                "data_id": "37515f",
+                "event_blur": "编辑框_服务器地址失去焦点",
+                "event_keydown": "编辑框_服务器地址按下某键"
+              },
+              {
+                "top": "65",
+                "left": "410",
+                "width": "76",
+                "height": "40",
+                "noPlace": true,
+                "buttonType": "default",
+                "visible": true,
+                "disable": false,
+                "size": "custom",
+                "zIndex": 0,
+                "text": "保存",
+                "id": "id-90425",
+                "componentName": "elButton",
+                "componentRawName": "Button",
+                "name": "按钮2",
+                "fid": "id-76673",
+                "data_id": "b9c96a",
+                "event_click": "按钮2被单击"
               }
             ],
             "data_id": "5730fb"

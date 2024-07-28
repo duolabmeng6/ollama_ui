@@ -43,3 +43,10 @@ func TestOllama操作_E对话(t *testing.T) {
 	println(data)
 
 }
+
+func TestOllama操作_E搜索(t *testing.T) {
+	m := NeOllama操作()
+	data := m.E搜索模型("qwen")
+	println(data)
+
+}

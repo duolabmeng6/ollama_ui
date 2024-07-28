@@ -22,6 +22,10 @@ export function E按钮1被点击() {
   return window['go']['main']['App']['E按钮1被点击']();
 }
 
+export function E搜索模型(arg1) {
+  return window['go']['main']['App']['E搜索模型'](arg1);
+}
+
 export function E检查更新() {
   return window['go']['main']['App']['E检查更新']();
 }
@@ -32,6 +36,10 @@ export function E模型改名(arg1, arg2) {
 
 export function E获取模型列表() {
   return window['go']['main']['App']['E获取模型列表']();
+}
+
+export function E设置服务器地址(arg1) {
+  return window['go']['main']['App']['E设置服务器地址'](arg1);
 }
 
 export function GetVersion() {

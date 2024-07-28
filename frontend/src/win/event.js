@@ -11,6 +11,8 @@ export function BindWindowEvent() {
         comps.Win.text = "OllamaManager " + await goFc.GetVersion();
         comps.选择夹3.value = "0"
         comps.表格1.data = []
+        comps.表格3.data = []
+        comps.ContentArea_下载状态.visible = false
         c.按钮_刷新模型列表被单击()
 
         systemFc.EventsOn("downInfo", function (data) {
@@ -62,6 +64,8 @@ export function BindWindowEvent() {
 
     c.按钮_下载被单击 = async function () {
         console.log("按钮_下载被单击")
+        comps.ContentArea_下载状态.visible = true
+
         if (comps.按钮_下载.text == "下载模型") {
             comps.按钮_下载.text = "停止下载模型"
             comps.标签_下载进度.text = "正在下载"
@@ -127,6 +131,35 @@ export function BindWindowEvent() {
         console.log("按钮_检查更新被单击")
         ElMessage.success('检查更新中');
         await goFc.E检查更新();
+    }
+
+    c.按钮_搜索模型被单击 = async function () {
+        console.log("按钮_搜索模型被单击")
+        let data = await goFc.E搜索模型(comps.编辑框_搜索模型名称.text)
+        data = JSON.parse(data)
+        console.log("表格数据",data)
+        comps.表格3.data = data
+        ElMessage.success('搜索成功');
+
+        
+    }
+
+
+    c.编辑框_搜索模型名称按下某键 = async function (event) {
+        console.log("编辑框_搜索模型名称按下某键")
+        // 按下回车键
+        if (event.key === "Enter") {
+            c.按钮_搜索模型被单击()
+        }
+        
+    }
+
+
+    c.按钮2被单击 = async function () {
+        console.log("按钮2被单击")
+        goFc.E设置服务器地址 ( "http://" + comps.编辑框_服务器地址.text)
+        ElMessage.success('已修改');
+
     }
 //Don't delete the event function flag
 }
