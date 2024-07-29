@@ -23,3 +23,5 @@
 * Window10
 * MacOS
 
+# 源码说明
+由[GoEasyDesigner](https://github.com/duolabmeng6/GoEasyDesigner)完成设计界面开发,wails技术构建应用
